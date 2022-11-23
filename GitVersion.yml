@@ -1,9 +1,9 @@
 mode: ContinuousDelivery
 branches: 
-  main:
+  master:
     regex: master
     tag: rc
-    increment: minor
+    increment: Minor
   feature:
     regex: shop-*
     tag: shop-{BranchName}
