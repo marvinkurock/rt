@@ -65,6 +65,15 @@ jobs:
       - run: |
           ls -la
           tree
+      - name: Commit Version
+        working-directory: k8s
+        run: |
+          git checkout -b prerelease/$GitVersion_FullSemVer
+          echo $GitVersion_FullSemVer > Version.yaml
+          git add .
+          git commit -m "Prerelease: $GitVersion_FullSemVer"
+          git push --set-upstream origin prerelease/$GitVersion_FullSemVer
+
   deploy_prod:
     needs: deploy_staging
     environment: Production
