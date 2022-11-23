@@ -1,0 +1,61 @@
+name: Release
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+
+env:
+  CHART_VERSION: 1.2.1
+  NAMESPACE: microservices
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    env:
+      COMPOSER_AUTH: ${{ secrets.ENV_COMPOSER_AUTH }}
+      MYSQL_DATABASE: haute-cuisine-testing
+      ECR_REGISTRY: 597031446072.dkr.ecr.eu-central-1.amazonaws.com
+      ECR_REPOSITORY: service-authentication
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+      - name: Set Version
+        run: |
+          dotnet-gitversion -output buildserver -verbosity Quiet
+          echo "Verison: $GitVersion_FullSemVer"
+      - name: Prepare
+        id: prep
+        run: |
+          build_id=1.1.$GitVersion_FullSemVer
+          echo "::set-output name=VERSION::${build_id}"
+      - name: Build and push the final image
+        run: |
+          set -e
+          echo "${{ steps.prep.outputs.VERSION }}"
+  deploy_staging:
+    needs: test-and-build
+    environment: Staging
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo deploy to stage
+  deploy_prod:
+    needs: deploy_staging
+    environment: Porduction
+    runs-on: ubuntu-latest
+    steps:
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ env.GitVersion_SemVer }}
+          tag_name: ${{ env.GitVersion_SemVer }}
+          body_path: readme.md

@@ -1,0 +1,12 @@
+mode: ContinuousDelivery
+branches: 
+  main:
+    regex: master
+    tag: rc
+    increment: minor
+  feature:
+    regex: shop-*
+    tag: shop-{BranchName}
+ignore:
+  sha: []
+merge-message-formats: {}
