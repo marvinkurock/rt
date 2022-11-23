@@ -72,6 +72,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
         run: |
           gh pr list
+          git config user.email deployment@tqgg.de
+          git config user.name deployment-bot
           git checkout -b prerelease/$GitVersion_FullSemVer
           echo $GitVersion_FullSemVer > Version.yaml
           git add .
