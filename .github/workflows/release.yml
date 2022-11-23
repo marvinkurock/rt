@@ -66,9 +66,10 @@ jobs:
       - name: release
         uses: actions/create-release@v1
         id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: false
-          token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           release_name: ${{ env.GitVersion_MajorMinorPatch }}
           tag_name: ${{ env.GitVersion_SemVer }}
