@@ -28,11 +28,12 @@ jobs:
       - name: Set Version
         run: |
           dotnet-gitversion -output buildserver -verbosity Quiet
-          echo "Verison: $GitVersion_FullSemVer"
+          echo "Verison:"
+          cat $GITHUB_ENV
       - name: Prepare
         id: prep
         run: |
-          build_id=1.1.$GitVersion_FullSemVer
+          build_id=$GitVersion_FullSemVer
           echo "::set-output name=VERSION::${build_id}"
       - name: Build and push the final image
         run: |
@@ -47,9 +48,21 @@ jobs:
           echo deploy to stage
   deploy_prod:
     needs: deploy_staging
-    environment: Porduction
+    environment: Production
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+      - name: Set Version
+        run: |
+          dotnet-gitversion -output buildserver -verbosity Quiet
+          echo "Verison:"
+          cat $GITHUB_ENV
       - name: release
         uses: actions/create-release@v1
         id: create_release
