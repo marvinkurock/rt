@@ -16,7 +16,7 @@ jobs:
     env:
       COMPOSER_AUTH: ${{ secrets.ENV_COMPOSER_AUTH }}
       ECR_REGISTRY: 597031446072.dkr.ecr.eu-central-1.amazonaws.com
-      ECR_REPOSITORY: service-${{ env.SERVICE_NAME }}
+      ECR_REPOSITORY: service-$SERVICE_NAME
     steps:
       - uses: actions/checkout@v2
         with:
