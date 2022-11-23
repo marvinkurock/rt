@@ -8,15 +8,15 @@ on:
 env:
   CHART_VERSION: 1.2.1
   NAMESPACE: microservices
+  SERVICE_NAME: authentication
 
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
     env:
       COMPOSER_AUTH: ${{ secrets.ENV_COMPOSER_AUTH }}
-      MYSQL_DATABASE: haute-cuisine-testing
       ECR_REGISTRY: 597031446072.dkr.ecr.eu-central-1.amazonaws.com
-      ECR_REPOSITORY: service-authentication
+      ECR_REPOSITORY: service-${{ env.SERVICE_NAME }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -35,6 +35,7 @@ jobs:
         run: |
           build_id=$GitVersion_FullSemVer
           echo "::set-output name=VERSION::${build_id}"
+          echo $ECR_REPOSITORY
       - name: Build and push the final image
         run: |
           set -e
