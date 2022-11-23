@@ -72,5 +72,5 @@ jobs:
           draft: false
           prerelease: false
           release_name: ${{ env.GitVersion_MajorMinorPatch }}
-          tag_name: ${{ env.GitVersion_SemVer }}
+          tag_name: ${{ env.GitVersion_MajorMinorPatch }}
           body_path: readme.md
