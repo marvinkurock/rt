@@ -69,12 +69,14 @@ jobs:
         working-directory: k8s
         env:
           GH_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+          RELEASE_FILE: release.yaml
         run: |
           gh pr list
           git config user.email deployment@tqgg.de
           git config user.name deployment-bot
           git checkout -b prerelease/$GitVersion_FullSemVer
           echo $GitVersion_FullSemVer > Version.yaml
+          sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_FullSemVer #[version]/" $RELEASE_FILE
           git add .
           git commit -m "Prerelease: $GitVersion_FullSemVer"
           git push --set-upstream origin prerelease/$GitVersion_FullSemVer
