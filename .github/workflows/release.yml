@@ -47,6 +47,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          path: app
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.7
         with:
@@ -56,6 +57,7 @@ jobs:
           dotnet-gitversion -output buildserver -verbosity Quiet
           echo "Verison:"
           cat $GITHUB_ENV
+        working-directory: app
       - uses: actions/checkout@v2
         with:
           repository: marvinkurock/k8s
