@@ -78,6 +78,7 @@ jobs:
           git add .
           git commit -m "Prerelease: $GitVersion_FullSemVer"
           git push --set-upstream origin prerelease/$GitVersion_FullSemVer
+          gh pr create --title "[Prerelease] Deployment: $GitVersion_FullSemVer"
 
   deploy_prod:
     needs: deploy_staging
