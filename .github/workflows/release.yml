@@ -68,8 +68,8 @@ jobs:
           tree
       - name: Commit Version
         working-directory: k8s
-        env:
-          GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
         run: |
           gh pr list
           git config user.email deployment@tqgg.de
