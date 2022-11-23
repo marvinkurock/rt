@@ -68,6 +68,7 @@ jobs:
         id: create_release
         with:
           draft: false
+          token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           release_name: ${{ env.GitVersion_SemVer }}
           tag_name: ${{ env.GitVersion_SemVer }}
