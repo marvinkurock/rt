@@ -98,6 +98,9 @@ jobs:
           repository: marvinkurock/k8s
           path: k8s
           token: ${{ secrets.API_GITHUB_TOKEN }}
+      - name: retag image
+        run: |
+          echo "Retag Image"
       - name: Commit Version
         working-directory: k8s
         env:
@@ -111,7 +114,7 @@ jobs:
           git add .
           git commit -m "Release: $GitVersion_MajorMinorPatch"
           git push --set-upstream origin prerelease/$GitVersion_MajorMinorPatch
-          gh pr create --title "[Prerelease] Deployment: $GitVersion_MajorMinorPatch" --body "[Prerelease] Deployment: $GitVersion_MajorMinorPatch"
+          gh pr create --title "[Release] Deployment: $GitVersion_MajorMinorPatch" --body "[Release] Deployment: $GitVersion_MajorMinorPatch"
       - name: release
         uses: actions/create-release@v1
         id: create_release
@@ -122,7 +125,4 @@ jobs:
           prerelease: false
           release_name: ${{ env.GitVersion_MajorMinorPatch }}
           tag_name: ${{ env.GitVersion_MajorMinorPatch }}
-          body_path: readme.md
-      - name: retag image
-        run: |
-          echo "Retag Image"
+          body_path: app/readme.md
