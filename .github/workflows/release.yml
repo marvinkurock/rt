@@ -70,6 +70,6 @@ jobs:
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
-          release_name: ${{ env.GitVersion_SemVer }}
+          release_name: ${{ env.GitVersion_MajorMinorPatch }}
           tag_name: ${{ env.GitVersion_SemVer }}
           body_path: readme.md
