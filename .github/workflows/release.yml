@@ -87,46 +87,52 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          path: app
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
+      - uses: ./.github/actions/release/
         with:
-          versionSpec: '5.x'
-      - name: Set Version
-        run: |
-          dotnet-gitversion -output buildserver -verbosity Quiet
-          echo "Version:"
-          cat $GITHUB_ENV
-        working-directory: app
-      - uses: actions/checkout@v2
-        with:
-          repository: marvinkurock/k8s
-          path: k8s
-          token: ${{ secrets.API_GITHUB_TOKEN }}
-      - name: retag image
-        run: |
-          echo "Retag Image"
-      - name: Commit Version
-        working-directory: k8s
-        env:
-          GH_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
-        run: |
-          git config user.email deployment@tqgg.de
-          git config user.name deployment-bot
-          git checkout -b release/$GitVersion_MajorMinorPatch
-          sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_MajorMinorPatch #[version]/" $PROD_RELEASE_FILE
-          git add .
-          git commit -m "Release: $GitVersion_MajorMinorPatch"
-          git push --set-upstream origin release/$GitVersion_MajorMinorPatch
-          gh pr create --title "[Release] Deployment: $GitVersion_MajorMinorPatch" --body "[Release] Deployment: $GitVersion_MajorMinorPatch"
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
-        env:
+          k8s_repo: marvinkurock/k8s
+          API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+          STAGING_RELEASE_FILE: ${{ env.PROD_RELEASE_FILE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ env.GitVersion_MajorMinorPatch }}
-          tag_name: ${{ env.GitVersion_MajorMinorPatch }}
-          body_path: app/readme.md
+            #     path: app
+      # - name: Install GitVersion
+      #   uses: gittools/actions/gitversion/setup@v0.9.7
+      #   with:
+      #     versionSpec: '5.x'
+      # - name: Set Version
+      #   run: |
+      #     dotnet-gitversion -output buildserver -verbosity Quiet
+      #     echo "Version:"
+      #     cat $GITHUB_ENV
+      #   working-directory: app
+      # - uses: actions/checkout@v2
+      #   with:
+      #     repository: marvinkurock/k8s
+      #     path: k8s
+      #     token: ${{ secrets.API_GITHUB_TOKEN }}
+      # - name: retag image
+      #   run: |
+      #     echo "Retag Image"
+      # - name: Commit Version
+      #   working-directory: k8s
+      #   env:
+      #     GH_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+      #   run: |
+      #     git config user.email deployment@tqgg.de
+      #     git config user.name deployment-bot
+      #     git checkout -b release/$GitVersion_MajorMinorPatch
+      #     sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_MajorMinorPatch #[version]/" $PROD_RELEASE_FILE
+      #     git add .
+      #     git commit -m "Release: $GitVersion_MajorMinorPatch"
+      #     git push --set-upstream origin release/$GitVersion_MajorMinorPatch
+      #     gh pr create --title "[Release] Deployment: $GitVersion_MajorMinorPatch" --body "[Release] Deployment: $GitVersion_MajorMinorPatch"
+      # - name: release
+      #   uses: actions/create-release@v1
+      #   id: create_release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     draft: false
+      #     prerelease: false
+      #     release_name: ${{ env.GitVersion_MajorMinorPatch }}
+      #     tag_name: ${{ env.GitVersion_MajorMinorPatch }}
+      #     body_path: app/readme.md
