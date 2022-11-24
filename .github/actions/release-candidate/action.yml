@@ -10,6 +10,9 @@ inputs:
   STAGING_RELEASE_FILE:
     description: path of the release file to update the version
     required: true
+  GITHUB_TOKEN:
+    description: repo github token
+    required: true
 runs:
   using: composite
   steps:
@@ -48,7 +51,7 @@ runs:
       uses: actions/create-release@v1
       id: create_release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
       with:
         draft: false
         prerelease: true

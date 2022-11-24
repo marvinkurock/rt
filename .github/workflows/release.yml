@@ -45,6 +45,7 @@ jobs:
           k8s_repo: marvinkurock/k8s
           API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
           STAGING_RELEASE_FILE: ${{ env.STAGING_RELEASE_FILE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - uses: actions/checkout@v2
       #   with:
       #     fetch-depth: 0
