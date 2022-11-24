@@ -40,6 +40,8 @@ jobs:
     needs: test-and-build
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        
       - uses: ./.github/actions/release-candidate/
         with:
           k8s_repo: marvikkurock/k8s
