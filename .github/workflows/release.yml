@@ -79,7 +79,7 @@ jobs:
       #     gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer"
       #
   create_release:
-    needs: deploy_staging
+    needs: create_release_candidate
     environment: Production
     runs-on: ubuntu-latest
     steps:
