@@ -31,6 +31,7 @@ runs:
         repository: ${{ inputs.k8s_repo }}
         path: k8s
         token: ${{ inputs.API_GITHUB_TOKEN }}
+
     - name: Commit Version and create Pullrequest (Flux)
       working-directory: k8s
       shell: bash
