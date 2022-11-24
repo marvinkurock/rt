@@ -37,9 +37,21 @@ runs:
       run: |
         git config user.email deployment@tqgg.de
         git config user.name deployment-bot
-        git checkout -b releasecandidate/$GitVersion_FullSemVer
-        sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_FullSemVer #[version]/" $STAGING_RELEASE_FILE
+        git checkout -b releasecandidate/$GitVersion_SemVer
+        sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_SemVer #[version]/" $STAGING_RELEASE_FILE
         git add .
         git commit -m "Prerelease: $GitVersion_FullSem"
-        git push --set-upstream origin releasecandidate/$GitVersion_FullSemVer
-        gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer"
+        git push --set-upstream origin releasecandidate/$GitVersion_SemVer
+        gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_SemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_SemVer"
+
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        draft: false
+        prerelease: true
+        release_name: ${{ env.GitVersion_SemVer }}
+        tag_name: ${{ env.GitVersion_SemVer }}
+        body_path: readme.md
