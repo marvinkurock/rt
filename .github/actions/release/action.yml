@@ -55,6 +55,6 @@ runs:
       with:
         draft: false
         prerelease: true
-        release_name: ${{ env.GitVersion_SemVer }}
-        tag_name: ${{ env.GitVersion_SemVer }}
+        release_name: ${{ env.GitVersion_MajorMinorPatch }}
+        tag_name: ${{ env.GitVersion_MajorMinorPatch }}
         body_path: readme.md
