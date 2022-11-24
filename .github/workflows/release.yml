@@ -92,6 +92,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - uses: actions/checkout@v2
+        with:
+          repository: marvinkurock/ga
+          token: ${{ secrets.API_GITHUB_TOKEN }}
+          path: .github/actions
       - uses: ./.github/actions/release/
         with:
           k8s_repo: marvinkurock/k8s
