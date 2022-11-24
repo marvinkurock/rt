@@ -91,7 +91,7 @@ jobs:
         with:
           k8s_repo: marvinkurock/k8s
           API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
-          STAGING_RELEASE_FILE: ${{ env.PROD_RELEASE_FILE }}
+          PROD_RELEASE_FILE: ${{ env.PROD_RELEASE_FILE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             #     path: app
       # - name: Install GitVersion
