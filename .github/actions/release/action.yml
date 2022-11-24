@@ -1,5 +1,5 @@
-name: Build Release Candidate
-description: Build a release candidate
+name: Promote ReleaseCandidate
+description: Promote a release candidate
 inputs:
   k8s_repo:
     description: repo of the k8s config
@@ -7,7 +7,7 @@ inputs:
   API_GITHUB_TOKEN:
     description: Github token for the k8s repo
     required: true
-  STAGING_RELEASE_FILE:
+  PROD_RELEASE_FILE:
     description: path of the release file to update the version
     required: true
   GITHUB_TOKEN:
@@ -36,16 +36,16 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.API_GITHUB_TOKEN }}
-        RELEASE_FILE: ${{ inputs.STAGING_RELEASE_FILE }}
+        RELEASE_FILE: ${{ inputs.PROD_RELEASE_FILE }}
       run: |
         git config user.email deployment@tqgg.de
         git config user.name deployment-bot
-        git checkout -b releasecandidate/$GitVersion_SemVer
-        sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_SemVer #[version]/" $RELEASE_FILE
+        git checkout -b release/$GitVersion_MajorMinorPatch
+        sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_MajorMinorPatch #[version]/" $RELEASE_FILE
         git add .
-        git commit -m "Prerelease: $GitVersion_FullSem"
-        git push --set-upstream origin releasecandidate/$GitVersion_SemVer
-        gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_SemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_SemVer"
+        git commit -m "Release: $GitVersion_MajorMinorPatch"
+        git push --set-upstream origin release/$GitVersion_MajorMinorPatch
+        gh pr create --title "[Release] Deployment: $GitVersion_MajorMinorPatch" --body "[Release] Deployment: $GitVersion_MajorMinorPatch"
 
     - name: release
       uses: actions/create-release@v1
