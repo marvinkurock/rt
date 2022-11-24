@@ -22,6 +22,7 @@ runs:
       with:
         versionSpec: "5.x"
     - name: Set Version
+      shell: bash
       run: |
         dotnet-gitversion -output buildserver -verbosity Quiet
         echo "Verison:"
@@ -34,6 +35,7 @@ runs:
         token: ${{ inputs.API_GITHUB_TOKEN }}
     - name: Commit Version and create Pullrequest (Flux)
       working-directory: k8s
+      shell: bash
       env:
         GH_TOKEN: ${{ inputs.API_GITHUB_TOKEN }}
         STAGING_RELEASE_FILE: ${{ inputs.STAGING_RELEASE_FILE }}
