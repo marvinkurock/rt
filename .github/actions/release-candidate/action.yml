@@ -1,0 +1,48 @@
+name: Build Release Candidate
+description: Build a release candidate
+inputs:
+  k8s_repo:
+    description: repo of the k8s config
+    required: true
+  API_GITHUB_TOKEN:
+    description: Github token for the k8s repo
+    required: true
+  STAGING_RELEASE_FILE:
+    description: path of the release file to update the version
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        path: app
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.7
+      with:
+        versionSpec: "5.x"
+    - name: Set Version
+      run: |
+        dotnet-gitversion -output buildserver -verbosity Quiet
+        echo "Verison:"
+        cat $GITHUB_ENV
+      working-directory: app
+    - uses: actions/checkout@v2
+      with:
+        repository: ${{ inputs.k8s_repo }}
+        path: k8s
+        token: ${{ inputs.API_GITHUB_TOKEN }}
+    - name: Commit Version and create Pullrequest (Flux)
+      working-directory: k8s
+      env:
+        GH_TOKEN: ${{ inputs.API_GITHUB_TOKEN }}
+        STAGING_RELEASE_FILE: ${{ inputs.STAGING_RELEASE_FILE }}
+      run: |
+        git config user.email deployment@tqgg.de
+        git config user.name deployment-bot
+        git checkout -b releasecandidate/$GitVersion_FullSemVer
+        sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_FullSemVer #[version]/" $STAGING_RELEASE_FILE
+        git add .
+        git commit -m "Prerelease: $GitVersion_FullSem"
+        git push --set-upstream origin releasecandidate/$GitVersion_FullSemVer
+        gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer"

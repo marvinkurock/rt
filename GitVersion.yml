@@ -7,6 +7,10 @@ branches:
   feature:
     regex: shop-*
     tag: shop-{BranchName}
+  hotfix:
+    regex: hotfix/*
+    tag: hf
+    increment: Patch
 ignore:
   sha: []
 merge-message-formats: {}

@@ -40,39 +40,44 @@ jobs:
     needs: test-and-build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: ./.github/actions/release-candidate/
         with:
-          fetch-depth: 0
-          path: app
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: '5.x'
-      - name: Set Version
-        run: |
-          dotnet-gitversion -output buildserver -verbosity Quiet
-          echo "Verison:"
-          cat $GITHUB_ENV
-        working-directory: app
-      - uses: actions/checkout@v2
-        with:
-          repository: marvinkurock/k8s
-          path: k8s
-          token: ${{ secrets.API_GITHUB_TOKEN }}
-      - name: Commit Version and create Pullrequest (Flux)
-        working-directory: k8s
-        env:
-          GH_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
-        run: |
-          git config user.email deployment@tqgg.de
-          git config user.name deployment-bot
-          git checkout -b releasecandidate/$GitVersion_FullSemVer
-          sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_FullSemVer #[version]/" $STAGING_RELEASE_FILE
-          git add .
-          git commit -m "Prerelease: $GitVersion_FullSem"
-          git push --set-upstream origin releasecandidate/$GitVersion_FullSemVer
-          gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer"
-
+          k8s_repo: marvikkurock/k8s
+          API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+          STAGING_RELEASE_FILE: ${{ env.STAGING_RELEASE_FILE }}
+      # - uses: actions/checkout@v2
+      #   with:
+      #     fetch-depth: 0
+      #     path: app
+      # - name: Install GitVersion
+      #   uses: gittools/actions/gitversion/setup@v0.9.7
+      #   with:
+      #     versionSpec: '5.x'
+      # - name: Set Version
+      #   run: |
+      #     dotnet-gitversion -output buildserver -verbosity Quiet
+      #     echo "Verison:"
+      #     cat $GITHUB_ENV
+      #   working-directory: app
+      # - uses: actions/checkout@v2
+      #   with:
+      #     repository: marvinkurock/k8s
+      #     path: k8s
+      #     token: ${{ secrets.API_GITHUB_TOKEN }}
+      # - name: Commit Version and create Pullrequest (Flux)
+      #   working-directory: k8s
+      #   env:
+      #     GH_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
+      #   run: |
+      #     git config user.email deployment@tqgg.de
+      #     git config user.name deployment-bot
+      #     git checkout -b releasecandidate/$GitVersion_FullSemVer
+      #     sed -i "s/\(.*\):.*#\[version\]/\1: $GitVersion_FullSemVer #[version]/" $STAGING_RELEASE_FILE
+      #     git add .
+      #     git commit -m "Prerelease: $GitVersion_FullSem"
+      #     git push --set-upstream origin releasecandidate/$GitVersion_FullSemVer
+      #     gh pr create --title "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer" --body "[ReleaseCandidate] Deployment: $GitVersion_FullSemVer"
+      #
   create_release:
     needs: deploy_staging
     environment: Production
