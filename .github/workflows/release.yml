@@ -1,9 +1,6 @@
 name: Release
 on:
   workflow_dispatch:
-  release:
-    types:
-      - published
 
 env:
   CHART_VERSION: 1.2.1
@@ -45,7 +42,7 @@ jobs:
           fetch-depth: 0
       - uses: ./.github/actions/release-candidate/
         with:
-          k8s_repo: marvikkurock/k8s
+          k8s_repo: marvinkurock/k8s
           API_GITHUB_TOKEN: ${{ secrets.API_GITHUB_TOKEN }}
           STAGING_RELEASE_FILE: ${{ env.STAGING_RELEASE_FILE }}
       # - uses: actions/checkout@v2
