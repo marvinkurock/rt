@@ -16,6 +16,7 @@ jobs:
         with:
           repository: The-Quality-Group/service-authentication
           token: ${{ secrets.DEVOPS_GITHUB_TOKEN }}
+          fetch-depth: 0
       - uses: actions/checkout@v2
         with:
           repository: The-Quality-Group/github-actions
