@@ -21,7 +21,7 @@ jobs:
           repository: The-Quality-Group/github-actions
           token: ${{ secrets.DEVOPS_GITHUB_TOKEN }}
           path: .github/actions
-      - uses: ./github/actions/ci
+      - uses: ./.github/actions/ci
         with:
           SERVICE_NAME: ${{ env.SERVICE_NAME }}
           PUSH_IMAGE: ${{ github.ref == 'refs/heads/master' }}
