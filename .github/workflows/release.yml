@@ -11,28 +11,18 @@ env:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
-    env:
-      COMPOSER_AUTH: ${{ secrets.ENV_COMPOSER_AUTH }}
-      MYSQL_DATABASE: haute-cuisine-testing
-      ECR_REGISTRY: 597031446072.dkr.ecr.eu-central-1.amazonaws.com
-      ECR_REPOSITORY: service-authentication
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
+          repository: The-Quality-Group/service-authentication
+          token: ${{ secrets.DEVOPS_GITHUB_TOKEN }}
+      - uses: actions/checkout@v2
         with:
-          versionSpec: '5.x'
-      - name: Set Version
-        run: |
-          dotnet-gitversion -output buildserver -verbosity Quiet
-          echo "Verison:"
-          cat $GITHUB_ENV
-      - name: Build and push the final image
-        run: |
-          set -e
-          echo "$GitVersion_FullSemVer"
+          repository: marvinkurock/ga
+          token: ${{ secrets.DEVOPS_GITHUB_TOKEN }}
+          path: .github/actions
+      - run: |
+          tree -L 2
   create_release_candidate:
     needs: test-and-build
     runs-on: ubuntu-latest
